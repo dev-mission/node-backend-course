@@ -1,0 +1,29 @@
+{
+  "name": "dev-mission-backend",
+  "version": "1.0.0",
+  "description": "## Create a Package",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "dependencies": {
+    "gitbook-plugin-include-codeblock": "^3.2.2"
+  },
+  "devDependencies": {
+    "gulp": "^4.0.0",
+    "gulp-gh-pages": "^0.5.4"
+  },
+  "scripts": {
+    "gulp": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dev-mission/node-backend-course.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dev-mission/node-backend-course/issues"
+  },
+  "homepage": "https://github.com/dev-mission/node-backend-course#readme"
+}
