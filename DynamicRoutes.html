@@ -214,20 +214,81 @@ app.listen(<span class="hljs-number">8080</span>, () =&gt; {
 <blockquote>
 <p><a id="hello_user_query.js" href="examples/hello_user_query.js">hello_user_query.js</a></p>
 </blockquote>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;express&apos;</span>); <span class="hljs-comment">// import express framework.</span>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;express&quot;</span>); <span class="hljs-comment">// import express framework.</span>
 
 <span class="hljs-keyword">const</span> app = express();
 
-app.get(<span class="hljs-string">&apos;/&apos;</span>, (request, response) =&gt; {
-  <span class="hljs-built_in">console</span>.log(request.query);
-  response.send(<span class="hljs-string">`Hello <span class="hljs-subst">${request.query.first_name}</span> <span class="hljs-subst">${request.query.last_name}</span>!`</span>);
-})
+app.get(<span class="hljs-string">&quot;/&quot;</span>, (req, res) =&gt; {
+  <span class="hljs-built_in">console</span>.log(req.query);
+  res.send(<span class="hljs-string">`Hello <span class="hljs-subst">${req.query.first_name}</span> <span class="hljs-subst">${req.query.last_name}</span>!`</span>);
+});
 
 <span class="hljs-comment">// start the server on port 8080</span>
 app.listen(<span class="hljs-number">8080</span>, () =&gt; {
-  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&apos;Server listening on port 8080&apos;</span>);
-})
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Server listening on port 8080&quot;</span>);
+});
 </code></pre>
+<h3 id="request-body">Request Body</h3>
+<p>The final way to pass parameters is through the request body. Let&apos;s look at an example.</p>
+<blockquote>
+<p><a id="request_body.html" href="examples/static/request_body.html">request_body.html</a></p>
+</blockquote>
+<pre><code class="lang-html"><span class="hljs-meta">&lt;!doctype html&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span>
+    <span class="hljs-comment">&lt;!-- /// [methodpost] --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">form</span> <span class="hljs-attr">method</span>=<span class="hljs-string">&apos;POST&apos;</span> <span class="hljs-attr">action</span>=<span class="hljs-string">&apos;/say-hello&apos;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">label</span>&gt;</span>Name: <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&apos;text&apos;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&apos;name&apos;</span> /&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span>
+    <span class="hljs-comment">&lt;!-- /// [methodpost] --&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span>
+</code></pre>
+<blockquote>
+<p><a id="request_body.js" href="examples/request_body.js">request_body.js</a></p>
+</blockquote>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;express&quot;</span>); <span class="hljs-comment">// import express framework.</span>
+<span class="hljs-keyword">const</span> bodyParser = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;body-parser&quot;</span>); <span class="hljs-comment">// parse request body.</span>
+
+<span class="hljs-keyword">const</span> app = express();
+app.use(bodyParser.urlencoded({ extended: <span class="hljs-literal">true</span> })); <span class="hljs-comment">// handle url encoded forms</span>
+
+<span class="hljs-comment">// serve static HTML file</span>
+app.get(<span class="hljs-string">&quot;/&quot;</span>, (req, res) =&gt; {
+  res.sendFile(<span class="hljs-string">&quot;./static/request_body.html&quot;</span>, { root: __dirname });
+});
+
+<span class="hljs-comment">//! [methodpost]</span>
+app.post(<span class="hljs-string">&quot;/say-hello&quot;</span>, (req, res) =&gt; {
+  <span class="hljs-built_in">console</span>.log(req.body);
+  res.send(<span class="hljs-string">`Hello <span class="hljs-subst">${req.body.name}</span>!`</span>);
+});
+<span class="hljs-comment">//! [methodpost]</span>
+
+<span class="hljs-comment">// start the server on port 8080</span>
+app.listen(<span class="hljs-number">8080</span>, () =&gt; {
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Server listening on port 8080&quot;</span>);
+});
+</code></pre>
+<p><img src="images/request_body.png" alt="Chrome DevTools - Network View"></p>
+<p>The screenshot above shows the request that the browser made to the server (and parts of the response).</p>
+<h4 id="request-method"><code>Request Method</code></h4>
+<p>This is also referred to as the <a href="GLOSSARY.html#http-method" class="glossary-term" title="HTTP methods indicate the desired action to be performed for a given resource. Although they can also be nouns, these request methods are sometimes referred as HTTP verbs. Each of them implements a different semantic, but some common features are shared by a group of them: e.g. a request method can be safe, idempotent, or cacheable. (source: https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods)">HTTP method</a>.</p>
+<p>Notice the <code>app.post</code> (from the server code) which tells the server to handle <code>POST</code> requests.</p>
+<pre><code class="lang-javascript">app.post(<span class="hljs-string">&quot;/say-hello&quot;</span>, (req, res) =&gt; {
+  <span class="hljs-built_in">console</span>.log(req.body);
+  res.send(<span class="hljs-string">`Hello <span class="hljs-subst">${req.body.name}</span>!`</span>);
+});
+</code></pre>
+<p>And the <code>&lt;form method=&apos;post&apos;&gt;</code> (from the client code) which tells the client to make a <code>POST</code> request. This will default to a <code>GET</code> request if not specified.</p>
+<h4 id="request-headers"><code>Request Headers</code></h4>
+<p>This is part of the <a href="GLOSSARY.html#http-message" class="glossary-term" title="HTTP messages are how data is exchanged between a server and a client. There are two types of messages: requests sent by the client to trigger an action on the server, and responses, the answer from the server. (source: https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages)">HTTP Message</a>. These are more data passed from the client to the server. These are meta data about the request. Some useful headers are:</p>
+<ul>
+<li><code>Content-Type</code>: This tell the server how to read the data passed in the request body.</li>
+</ul>
+<h4 id="request-body"><code>Request Body</code></h4>
+<p>The default browser supported format for sending data is <code>application/x-www-form-urlencoded</code>. This encodes the data the same way query parameters do. </p>
+<p>(Click the <code>view source</code> link in <code>Form Data</code> in DevTools)</p>
 
                                 
                                 </section>
@@ -267,7 +328,7 @@ app.listen(<span class="hljs-number">8080</span>, () =&gt; {
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Dynamic Routes","level":"1.4","depth":1,"previous":{"title":"Static Files","level":"1.3","depth":1,"path":"StaticFiles.md","ref":"StaticFiles.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include-codeblock"],"pluginsConfig":{"include-codeblock":{"check":false,"edit":false,"fixlang":false,"lang":"","template":"default","theme":"chrome","unindent":false},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"DynamicRoutes.md","mtime":"2018-04-24T23:15:37.404Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-24T23:33:43.816Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Dynamic Routes","level":"1.4","depth":1,"previous":{"title":"Static Files","level":"1.3","depth":1,"path":"StaticFiles.md","ref":"StaticFiles.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["include-codeblock","livereload"],"pluginsConfig":{"include-codeblock":{"check":false,"edit":false,"fixlang":false,"lang":"","template":"default","theme":"chrome","unindent":false},"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"DynamicRoutes.md","mtime":"2018-04-25T01:59:25.490Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-25T02:02:48.831Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
@@ -275,6 +336,10 @@ app.listen(<span class="hljs-number">8080</span>, () =&gt; {
         
     <script src="gitbook/gitbook.js"></script>
     <script src="gitbook/theme.js"></script>
+    
+        
+        <script src="gitbook/gitbook-plugin-livereload/plugin.js"></script>
+        
     
         
         <script src="gitbook/gitbook-plugin-search/search-engine.js"></script>

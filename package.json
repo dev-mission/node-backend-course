@@ -6,15 +6,14 @@
   "directories": {
     "example": "examples"
   },
-  "dependencies": {
-    "gitbook-plugin-include-codeblock": "^3.2.2"
-  },
   "devDependencies": {
     "gulp": "^4.0.0",
-    "gulp-gh-pages": "^0.5.4"
+    "gulp-gh-pages": "^0.5.4",
+    "prettier": "^1.12.1"
   },
   "scripts": {
-    "gulp": "gulp"
+    "gulp": "gulp",
+    "book": "gitbook"
   },
   "repository": {
     "type": "git",
